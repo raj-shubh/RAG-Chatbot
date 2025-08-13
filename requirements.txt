@@ -1,0 +1,10 @@
+streamlit>=1.32.0
+langchain>=0.2.9
+langchain-huggingface>=0.0.6
+langchain-chroma>=0.1.4
+langchain-groq>=0.0.8
+PyPDF2>=3.0.1
+sentence-transformers>=2.2.2
+chromadb>=0.5.5
+torch==2.2.0 
+accelerate==0.30.0
