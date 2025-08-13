@@ -8,3 +8,4 @@ sentence-transformers>=2.2.2
 chromadb>=0.5.5
 torch==2.2.0 
 accelerate==0.30.0
+duckdb>=0.7.1

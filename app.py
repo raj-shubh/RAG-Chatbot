@@ -29,6 +29,9 @@ vector_store = Chroma(
     collection_name="rag_collection",
     embedding_function=embeddings,
     persist_directory="./chroma_db",
+     client_settings={
+        "chroma_db_impl": "duckdb+parquet"   # Use DuckDB backend instead of SQLite
+    }
 )
 
 # Prompt template
