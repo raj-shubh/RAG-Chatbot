@@ -1,5 +1,11 @@
 # 💬 RAG Chatbot (Groq + Chroma + Streamlit)
 
+**Summary:**  
+This project is a complete **Q/A chatbot** built with the **RAG (Retrieval-Augmented Generation)** approach.  
+It’s a simple web app where you can upload your documents and then ask questions about them.  
+The chatbot looks through your document, picks out the most relevant parts, and uses them as context to answer your question.  
+Your question and the selected context are combined into a prompt and sent to the LLM, which then gives back a clear, accurate, and well-formatted answer based only on your document.  
+
 This is a simple **Retrieval-Augmented Generation (RAG) chatbot** built with:
 
 - **Groq LLMs** for fast and efficient text generation  
