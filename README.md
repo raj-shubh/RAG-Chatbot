@@ -1,103 +1,59 @@
-# 💬 RAG Chatbot (Groq + Chroma + Streamlit)
+# Auto-Generate Slide Decks using LLM + Web Search
 
-**Summary:**  
-This project is a complete **Q/A chatbot** built with the **RAG (Retrieval-Augmented Generation)** approach.  
-It’s a simple web app where you can upload your documents and then ask questions about them.  
-The chatbot looks through your document, picks out the most relevant parts, and uses them as context to answer your question.  
-Your question and the selected context are combined into a prompt and sent to the LLM, which then gives back a clear, accurate, and well-formatted answer based only on your document.  
+## Overview
+Generate a structured PowerPoint presentation on any topic by combining an LLM with live web search. The script fetches recent sources, extracts content, asks an LLM to synthesize a slide outline in JSON, and builds a deck using python-pptx.
 
-This is a simple **Retrieval-Augmented Generation (RAG) chatbot** built with:
+## Features
+- Topic input via CLI
+- DuckDuckGo web search with content extraction (readability + bs4)
+- LLM synthesis with OpenAI (default) or Ollama fallback
+- Structured slides: Title, Overview, 3–4 Key Sections, Conclusion
+- Exports `.pptx`
 
-- **Groq LLMs** for fast and efficient text generation  
-- **HuggingFace embeddings** for semantic vectorization  
-- **Chroma** as the vector database  
-- **Streamlit** for the frontend  
+## Requirements
+- Python 3.9+
+- Internet access for search and (if using OpenAI) the API
 
-You can upload your own documents (`PDF` or `TXT`), index them into a local Chroma database, and then ask questions.  
-The chatbot retrieves relevant chunks from your docs and uses Groq’s model to generate fact-based answers.  
-
----
-
-## ✨ Features
-- 📄 Upload `.pdf` or `.txt` files  
-- 🔍 Automatically splits docs into chunks and stores them in Chroma DB  
-- 💡 Ask natural questions about your documents  
-- ✅ Answers grounded in your data (no random hallucinations)  
-- 🖥️ Clean Streamlit web interface  
-
----
-
-## 📂 Project Layout
-```
-├── app.py             # Main Streamlit app
-├── chroma_db/         # Chroma vector store (created after indexing)
-├── .env               # Stores API key
-├── requirements.txt   # Dependencies
-└── README.md  
-```
-
----
-
-## ⚡ Getting Started
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/your-username/rag-chatbot.git
-cd rag-chatbot
-```
-
-### 2. Create a virtual environment (recommended)
-```bash
-python -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate    # Windows
-```
-
-### 3. Install dependencies
+Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Add your API key
-Create a `.env` file in the project root and add your Groq API key:
-```ini
-GROQ_API_KEY=your_api_key_here
-```
+## Configuration
+Provide at least one LLM provider:
 
-### 5. Run the app
+- OpenAI (recommended):
+  ```bash
+  export OPENAI_API_KEY=sk-...
+  # Optional overrides
+  export OPENAI_MODEL=gpt-4o-mini
+  ```
+
+- Ollama (fallback):
+  ```bash
+  # Ensure Ollama is running locally
+  export OLLAMA_HOST=http://localhost:11434
+  export OLLAMA_MODEL=llama3.1
+  ```
+
+## Usage
 ```bash
-streamlit run app.py
+python generate_deck.py "LLM Evaluation" -o llm-eval.pptx --max-sources 6 --provider auto
 ```
 
----
+Arguments:
+- `topic` (positional): Topic for the deck.
+- `-o, --out`: Output path. Defaults to `deck-<topic>.pptx`.
+- `--max-sources`: Number of web sources to include (default 6).
+- `--provider`: `auto` (default), `openai`, or `ollama`.
 
-## 🖥️ How to Use
-1. Start the app  
-2. Upload a PDF or TXT file  
-3. Click **“Index Document”** (stores chunks in ChromaDB)  
-4. Type a question in the input box  
-5. Get answers based only on your document  
+## Output Structure
+The generated deck contains:
+- Slide 1: Title
+- Slide 2: Overview
+- Slides 3–6: Key sections (trends/arguments) with bullets
+- Final slide: Conclusion / Takeaways
 
----
-
-## 🧰 Requirements
-All dependencies are listed in `requirements.txt`:
-
-```
-streamlit
-langchain
-langchain-core
-langchain-chroma
-langchain-huggingface
-langchain-groq
-PyPDF2
-python-dotenv
-```
-
----
-
-## ⚙️ Tech Details
-- **Embeddings**: `sentence-transformers/all-mpnet-base-v2`  
-- **Vector DB**: Chroma with DuckDB backend (saved in `./chroma_db`)  
-- **Model**: `llama3-8b-8192` (Groq)  
-- **Chunking**: Size = `500`, Overlap = `100`  
+## Notes
+- The script attempts to parse strict JSON from the LLM. If parsing fails, it retries with a stricter instruction.
+- Web extraction uses readability; if it cannot extract the main content, it falls back to page text via BeautifulSoup.
